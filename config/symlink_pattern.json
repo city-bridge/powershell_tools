@@ -1,0 +1,15 @@
+{
+    "patterns":[
+        {
+            "pattern": "^config.*",
+            "symlink_to": "C:\\work\\powershell_tools\\symlink_to",
+            "delete_and_link": true
+        },
+        {
+            "pattern": "^symlink_from2.*",
+            "symlink_to": "C:\\work\\powershell_tools\\symlink_to",
+            "delete_and_link": false
+        }
+
+    ]
+}
