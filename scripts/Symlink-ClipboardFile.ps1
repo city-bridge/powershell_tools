@@ -35,9 +35,10 @@ Write-Output "input files"
 foreach ($file in $files) {
   Write-Output "  file: $file"
   $link_to_path = $sym_pattern.SearchLinkToPath($file)
-  if ($null -eq $link_to_path) {
+  if ($null -eq $link_to_path -or $link_to_path -eq "") {
     Write-Output "  symlink not found."
-    continue
+    Pause
+    exit
   }
   Write-Output "  symlink: $link_to_path"
 }
