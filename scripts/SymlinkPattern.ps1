@@ -39,6 +39,12 @@ class SymlinkPattern {
       if ($match.Length -gt 0) {
         return $conf.symlink_to
       }
+
+      $parent_name = $path | Split-Path -Parent | Split-Path -Leaf
+      $match = [regex]::Matches($parent_name, $conf.pattern)
+      if ($match.Length -gt 0) {
+        return $conf.symlink_to
+      }
     }
     return $null
   }
