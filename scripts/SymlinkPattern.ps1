@@ -1,19 +1,23 @@
 class SymlinkPattern {
+  # ConfigFilePathメソッドは、プロジェクトのルートディレクトリから設定ファイルのパスを返します。
   [string] ConfigFilePath() {
     $project_root = (Split-Path $PSScriptRoot -Parent)
     return $project_root + "\config\symlink_pattern.json"
   }
 
+  # LoadConfigTextメソッドは、設定ファイルの内容をテキストとして読み込みます。
   [string] LoadConfigText() {
     $config_path = $this.ConfigFilePath()
     return Get-Content -Path $config_path -Raw
   }
 
+  # LoadConfigメソッドは、設定ファイルの内容をオブジェクトに変換して返します。
   [object] LoadConfig() {
     $content = $this.LoadConfigText()
     return ConvertFrom-Json $content
   }
 
+  # SearchConfigメソッドは、指定されたパスに一致する設定を検索して返します。
   [object] SearchConfig([string]$path) {
     $confs = $this.LoadConfig()
     $file_name = $path | Split-Path -Leaf
@@ -26,6 +30,7 @@ class SymlinkPattern {
     return $null
   }
 
+  # SearchLinkToPathメソッドは、指定されたパスに一致するシンボリックリンクのパスを検索して返します。
   [string] SearchLinkToPath([string]$path) {
     $confs = $this.LoadConfig()
     $file_name = $path | Split-Path -Leaf
@@ -38,6 +43,7 @@ class SymlinkPattern {
     return $null
   }
 
+  # JunctionPathメソッドは、指定されたターゲットパスに対してジャンクションを作成します。
   [string] JunctionPath([string]$target) {
     Write-Debug "path: $target"
     $conf = $this.SearchConfig($target)
