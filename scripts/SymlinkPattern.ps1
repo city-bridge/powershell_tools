@@ -26,27 +26,22 @@ class SymlinkPattern {
       if ($match.Length -gt 0) {
         return $conf
       }
+      $parent_name = $path | Split-Path -Parent | Split-Path -Leaf
+      $match = [regex]::Matches($parent_name, $conf.pattern)
+      if ($match.Length -gt 0) {
+        return $conf
+      }
     }
     return $null
   }
 
   # SearchLinkToPathメソッドは、指定されたパスに一致するシンボリックリンクのパスを検索して返します。
-  [string] SearchLinkToPath([string]$path) {
-    $confs = $this.LoadConfig()
-    $file_name = $path | Split-Path -Leaf
-    foreach ($conf in $confs.patterns) {
-      $match = [regex]::Matches($file_name, $conf.pattern)
-      if ($match.Length -gt 0) {
-        return $conf.symlink_to
-      }
-
-      $parent_name = $path | Split-Path -Parent | Split-Path -Leaf
-      $match = [regex]::Matches($parent_name, $conf.pattern)
-      if ($match.Length -gt 0) {
-        return $conf.symlink_to
-      }
+  [string] SearchLinkToPath([string]$target) {
+    $conf = $this.SearchConfig($target)
+    if ($null -eq $conf) {
+      return $null
     }
-    return $null
+    return $conf.symlink_to
   }
 
   # JunctionPathメソッドは、指定されたターゲットパスに対してジャンクションを作成します。

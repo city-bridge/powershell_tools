@@ -50,3 +50,4 @@ if ($yes_no -eq "Yes" -or $yes_no -eq "yes" -or $yes_no -eq "y") {
     Write-Output "  $result_mes"
   }
 }
+Pause
