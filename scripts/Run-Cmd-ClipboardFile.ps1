@@ -10,6 +10,16 @@
   .PARAMETER Command
     The command to run.
     実行するコマンド。
+  
+  .PARAMETER Mode
+    The mode to run.
+    実行モード。
+    all: Run all files at once.
+    all: すべてのファイルを一度に実行します。
+    each_sequential: Run each file sequentially.
+    each_sequential: 各ファイルを順次実行します。
+    each_parallel: Run each file in parallel.
+    each_parallel: 各ファイルを並列に実行します。
 
   .INPUTS
     None. You cannot pipe objects.
@@ -21,7 +31,8 @@
     PS> .\Run-Cmd-ClipboardFile.ps1 -Command cat
 #>
 param(
-  [string]$Command
+  [string]$Command,
+  [ValidateSet("all","each_sequential","each_parallel")]$Mode
 )
 if ($null -eq $Command -or "" -eq $Command) {
   Get-Help $MyInvocation.MyCommand.Definition
@@ -44,5 +55,20 @@ foreach ($file in $files) {
 
 $yes_no = Read-Host "Please enter Yes or No(y/n):"
 if ($yes_no -eq "Yes" -or $yes_no -eq "yes" -or $yes_no -eq "y") {
-  Start-Process -FilePath $Command -ArgumentList $files
+  if ($Mode -eq "all") {
+    Start-Process -FilePath $Command -ArgumentList $files
+  }
+  elseif ($Mode -eq "each_sequential") {
+    foreach ($file in $files) {
+      Start-Process -FilePath $Command -ArgumentList $file -Wait
+    }
+  }
+  elseif ($Mode -eq "each_parallel") {
+    foreach ($file in $files) {
+      Start-Process -FilePath $Command -ArgumentList $file
+    }
+  }
+  else {
+    Write-Output "Invalid mode."
+  }
 }
